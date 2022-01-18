@@ -82,5 +82,7 @@ a {
 
 .content {
   height: calc(100vh - 200px);
+  width: 100%;
   background-color: #F8F8FA;
+  padding-top: 85px;
 }
