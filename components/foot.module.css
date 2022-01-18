@@ -5,6 +5,14 @@
   background-size: 100% 200px;
   margin-left: 0px;
 }
+
+.mbbg {
+  height: 480px;
+  width: 100%;
+  background: #f9f9f9 url("/images/bg_foot.png") no-repeat scroll top left;
+  background-size: 100% 480px;
+  margin-left: 0px;
+}
 .pos {
   height: 200px;
   position: fixed;

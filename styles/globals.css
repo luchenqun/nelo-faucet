@@ -42,6 +42,16 @@ a {
   top: 0px;
 }
 
+.mobile-header-logo {
+  width: 100%;
+  height: 85px;
+  background-color: #fff;
+  padding: 25px 0px 0px 20px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+}
+
 .ant-card-head-title {
   text-align: center;
 }
@@ -60,7 +70,7 @@ a {
   line-height: 46px;
   width: 100%;
   background: url("/images/bg_large_btn.png") no-repeat center center;
-  background-size: 100% auto;
+  background-size: 100% 46px;
   font-size: 16px;
   font-family: Microsoft YaHei;
   font-weight: 400;

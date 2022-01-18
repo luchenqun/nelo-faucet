@@ -1,15 +1,20 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import dayjs from "dayjs";
+import dynamic from 'next/dynamic';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { Layout, Image, message, Button, Col, Row, Card, Input, Spin } from 'antd';
-import { FacebookOutlined, GithubOutlined, TwitterOutlined, WeiboOutlined, GooglePlusOutlined } from '@ant-design/icons';
-const { Header, Content, Footer } = Layout;
-import Foot from '../components/foot'
+import { Image, message, Col, Row, Card, Input, Spin } from 'antd';
+import Head from 'next/head'
+const Foot = dynamic(
+  import('../components/foot'),
+  { ssr: false }
+);
+
 
 const sleep = time => {
   return new Promise(resolve => setTimeout(resolve, time));
 }
+
 export default class App extends Component {
   state = {
     loading: false,
@@ -17,48 +22,42 @@ export default class App extends Component {
     hash: '',
     err: '',
     result: false,
-    inputAddress: ''
+    inputAddress: '',
+    smallDevice: false
   }
   id = ""
 
   async componentDidMount() {
     try {
+      const smallDevice = () => {
+        const u = window.navigator.userAgent;
+        const device = { //移动终端浏览器版本信息
+          trident: u.indexOf('Trident') > -1, //IE内核
+          presto: u.indexOf('Presto') > -1, //opera内核
+          webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+          gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+          mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+          ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+          android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器
+          iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+          iPad: u.indexOf('iPad') > -1, //是否iPad
+          webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+        };
+
+        if ((device.mobile && !device.iPad) || (screen && screen.availWidth < 768)) {
+          return true;
+        }
+
+        return false;
+      }
       const load = await FingerprintJS.load()
       const result = await load.get();
       console.log("visitorId", result.visitorId)
       this.id = result.visitorId.toLowerCase()
+      this.setState({ smallDevice: smallDevice() })
     } catch (error) {
       this.id = dayjs().format("yyyyMMdd")
     }
-
-    // window.AWSC.use("nc", function (state, module) {
-    //   // 初始化
-    //   window.nc = module.init({
-    //     // 应用类型标识。它和使用场景标识（scene字段）一起决定了滑动验证的业务场景与后端对应使用的策略模型。您可以在阿里云验证码控制台的配置管理页签找到对应的appkey字段值，请务必正确填写。
-    //     appkey: "CF_APP_1",
-    //     //使用场景标识。它和应用类型标识（appkey字段）一起决定了滑动验证的业务场景与后端对应使用的策略模型。您可以在阿里云验证码控制台的配置管理页签找到对应的scene值，请务必正确填写。
-    //     scene: "register",
-    //     // 声明滑动验证需要渲染的目标ID。
-    //     renderTo: "nc",
-    //     width: "450",
-    //     language: "en",
-    //     test: module.TEST_PASS,
-    //     //前端滑动验证通过时会触发该回调参数。您可以在该回调参数中将会话ID（sessionId）、签名串（sig）、请求唯一标识（token）字段记录下来，随业务请求一同发送至您的服务端调用验签。
-    //     success: function (data) {
-    //       window.console && console.log(data.sessionId)
-    //       window.console && console.log(data.sig)
-    //       window.console && console.log(data.token)
-    //     },
-    //     // 滑动验证失败时触发该回调参数。
-    //     fail: function (failCode) {
-    //       window.console && console.log(failCode)
-    //     },
-    //     // 验证码加载出现异常时触发该回调参数。
-    //     error: function (errorCode) {
-    //       window.console && console.log(errorCode)
-    //     }
-    //   });
-    // })
   }
 
   send = async () => {
@@ -105,19 +104,25 @@ export default class App extends Component {
     const { loading, result, err } = this.state
     return (
       <div className='app'>
+        <Head>
+          <title>NSC TESTNET FAUCET</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"></meta>
+        </Head>
         <Spin tip="In the transaction......" spinning={loading}>
-          <div className="header-logo">
-            <Image preview={false} width={182} height={35} src="/images/nelo.png" />
+          <div className={this.state.smallDevice ? 'mobile-header-logo' : 'header-logo'}>
+            {
+              this.state.smallDevice ? <Image preview={false} width={38} height={35} src="/images/n.jpg" /> : <Image preview={false} width={182} height={35} src="/images/nelo.png" />
+            }
             <div style={{ float: "right" }}>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei" }} rel="noreferrer" href="https://nsctestnetscan.nelo.world/" target="_blank">Scan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.world/" target="_blank">Blind Box&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.world/farms" target="_blank">Farms&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetscan.nelo.world/" target="_blank">Scan</a>
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.world/" target="_blank">Blind Box</a>
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.world/farms" target="_blank">Farms</a>
             </div>
           </div>
           <Row type="flex" justify="center" align="middle" className='content'>
-            <Col style={{ minWidth: '500px', maxWidth: '500px' }}>
+            <Col style={{ minWidth: this.state.smallDevice ? '100%' : '500px', maxWidth: '500px' }}>
               <Card title="NSC TESTNET FAUCET" bordered={true}>
-                <Input ref={c => this.inputAddress = c} size="large" placeholder="Input you address" allowClear style={{ marginBottom: "15px" }} />
+                <Input ref={c => this.inputAddress = c} size="large" placeholder="Input you address" allowClear style={{ marginBottom: "15px", height: "46px" }} />
                 <div style={{ margin: "12px 0px" }}>
                   <div onClick={this.send} className="send">Requset 10 Nelo</div>
                 </div>
