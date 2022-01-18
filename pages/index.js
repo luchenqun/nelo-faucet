@@ -122,9 +122,9 @@ export default class App extends Component {
           <Row type="flex" justify="center" align="middle" className='content'>
             <Col style={{ minWidth: this.state.smallDevice ? '100%' : '500px', maxWidth: '500px' }}>
               <Card title="NSC TESTNET FAUCET" bordered={true}>
-                <Input ref={c => this.inputAddress = c} size="large" placeholder="Input you address" allowClear style={{ marginBottom: "15px", height: "46px" }} />
+                <Input ref={c => this.inputAddress = c} size="large" placeholder="Input your address" allowClear style={{ marginBottom: "15px", height: "46px" }} />
                 <div style={{ margin: "12px 0px" }}>
-                  <div onClick={this.send} className="send">Requset 10 Nelo</div>
+                  <div onClick={this.send} className="send">Request 10 Nelo</div>
                 </div>
               </Card>
             </Col>
