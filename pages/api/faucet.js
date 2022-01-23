@@ -38,8 +38,9 @@ const calcCount = (faucet, ip, id, to) => {
   for (const item of faucet.items) {
     ret.ip += item.includes(ip.toLowerCase()) ? 1 : 0;
     ret.id += item.includes(id.toLowerCase()) ? 1 : 0;
-    ret.address += item.includes(to.toLowerCase()) ? 1 : 0;
+    ret.to += item.includes(to.toLowerCase()) ? 1 : 0;
   }
+  return ret
 }
 
 console.log("api/faucet start", provider, chainId, hexPrivateKey, value, gasPrice, gas, ipMax)
@@ -67,6 +68,7 @@ export default async function handler(req, res) {
 
   try {
     const ret = calcCount(faucet, ip, id, to)
+    console.log(`ret=${JSON.stringify(ret)}`)
     if (!ip || !id) {
       return res.status(200).json({ msg: `forbid by the server!`, code: 403 })
     }
