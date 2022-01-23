@@ -10,12 +10,7 @@ const db = "./db/"
 
 // const faucetTemplet = {
 //   "date": 20220114,
-//   "192.168.0.1": {
-//     "count": 4,
-//     "738792848": {
-//       "0x6e355de3fbc1290c5A72D9A9400A0304E2b8a756": 2
-//     }
-//   }
+//   "data": ["ip+id+address"]
 // }
 
 let faucet = undefined
@@ -25,26 +20,26 @@ const isObj = (object) => {
 }
 
 // 确保faucet对象是faucetTemplet格式
-const initFaucet = (faucet, date, ip, id) => {
+const initFaucet = (faucet, date) => {
   if (!isObj(faucet)) {
     faucet = {}
   }
-
   if (faucet.date == undefined) {
     faucet["date"] = date
   }
-  if (!isObj(faucet[ip])) {
-    faucet[ip] = {}
+  if (!Array.isArray(faucet["items"])) {
+    faucet["items"] = []
   }
-  if (!isObj(faucet[ip][id])) {
-    faucet[ip][id] = {}
-  }
-
-  if (!Number.isInteger(faucet[ip].count)) {
-    faucet[ip]["count"] = 0
-  }
-
   return faucet
+}
+
+const calcCount = (faucet, ip, id, to) => {
+  let ret = { ip: 0, id: 0, to: 0 }
+  for (const item of faucet.items) {
+    ret.ip += item.includes(ip.toLowerCase()) ? 1 : 0;
+    ret.id += item.includes(id.toLowerCase()) ? 1 : 0;
+    ret.address += item.includes(to.toLowerCase()) ? 1 : 0;
+  }
 }
 
 console.log("api/faucet start", provider, chainId, hexPrivateKey, value, gasPrice, gas, ipMax)
@@ -54,8 +49,8 @@ export default async function handler(req, res) {
   const { to, id } = body
   const ip = headers['cf-connecting-ip'] || "127.0.0.1"
   const date = dayjs().format("YYYYMMDD")
-  console.log(date, ip, id, to)
-
+  const item = ip.toLowerCase() + "_" + id.toLowerCase() + "_" + to.toLowerCase()
+  console.log(`date=${date}, ip=${ip}, id=${id}, to=${to}`)
   if (faucet == undefined) {
     try {
       await fs.ensureDir(db);
@@ -68,12 +63,16 @@ export default async function handler(req, res) {
       faucet = {}
     }
   }
-  faucet = initFaucet(faucet, date, ip, id)
+  faucet = initFaucet(faucet, date)
 
   try {
-    if (Number.isInteger(faucet[ip][id][to]) && faucet[ip][id][to] >= addressMax) {
+    const ret = calcCount(faucet, ip, id, to)
+    if (!ip || !id) {
+      return res.status(200).json({ msg: `forbid by the server!`, code: 403 })
+    }
+    if (ret.to >= addressMax) {
       return res.status(200).json({ msg: `A maximum of ${addressMax} withdrawals per day are allowed`, code: 401 })
-    } else if (faucet[ip]["count"] >= ipMax) {
+    } else if (ret.ip >= ipMax || ret.id >= ipMax) {
       return res.status(200).json({ msg: `One IP address can be received for a maximum of ${ipMax} times a day`, code: 400 })
     }
 
@@ -83,8 +82,7 @@ export default async function handler(req, res) {
     }
     const transaction = await account.signTransaction(message)
     const data = await web3.eth.sendSignedTransaction(transaction.rawTransaction)
-    faucet[ip][id][to] = Number.isInteger(faucet[ip][id][to]) ? faucet[ip][id][to] + 1 : 1
-    faucet[ip]["count"] = faucet[ip]["count"] + 1
+    faucet.items.push(item)
     await fs.writeJSON(db + faucet.date + ".json", faucet)
     res.status(200).json({ msg: "success", data, code: 0 })
   } catch (error) {
