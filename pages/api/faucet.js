@@ -51,7 +51,6 @@ export default async function handler(req, res) {
   const ip = headers['cf-connecting-ip'] || "127.0.0.1"
   const date = dayjs().format("YYYYMMDD")
   const item = ip.toLowerCase() + "_" + id.toLowerCase() + "_" + to.toLowerCase()
-  console.log(`date=${date}, ip=${ip}, id=${id}, to=${to}`)
   if (faucet == undefined) {
     try {
       await fs.ensureDir(db);
@@ -68,7 +67,7 @@ export default async function handler(req, res) {
 
   try {
     const ret = calcCount(faucet, ip, id, to)
-    console.log(`ret=${JSON.stringify(ret)}`)
+    console.log(`date=${date}, ip=${ip}|${ret.ip}, id=${id}|${ret.id}, to=${to}|${ret.to}`)
     if (!ip || !id) {
       return res.status(200).json({ msg: `forbid by the server!`, code: 403 })
     }
