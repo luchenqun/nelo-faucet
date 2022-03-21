@@ -114,9 +114,9 @@ export default class App extends Component {
               this.state.smallDevice ? <Image preview={false} width={38} height={35} src="/images/n.jpg" /> : <Image preview={false} width={182} height={35} src="/images/nelo.png" />
             }
             <div style={{ float: "right" }}>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetscan.nelo.world/" target="_blank">Scan</a>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.world/" target="_blank">Blind Box</a>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.world/farms" target="_blank">Farms</a>
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://analysis.nelo.network/" target="_blank">Scan</a>
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.network/" target="_blank">Blind Box</a>
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="https://nsctestnetdapp.nelo.network/farms" target="_blank">Farms</a>
             </div>
           </div>
           <Row type="flex" justify="center" align="middle" className='content'>
