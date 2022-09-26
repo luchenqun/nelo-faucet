@@ -1,10 +1,14 @@
 {
-  "provider": "http://15.223.32.213:6060",
-  "chainId": 101,
-  "hexPrivateKey": "4003cbb02d371ea290a588f11fdbd2ef32ebe21714c4b34b19fd984590b5ae7e",
+  "provider": "http://carina-eth-rpc.mybc.fun",
+  "rpc": "http://carina-rpc.mybc.fun",
+  "api": "http://carina-api.mybc.fun",
+  "chainId": 20191205,
+  "cosmosChainId": "evmos_20191205-1",
+  "hexPrivateKey": "f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769",
   "value": "10000000000000000000",
-  "gasPrice": "100000000000000",
-  "gas": "41000",
-  "ipMax": 1,
+  "govValue": "1000000000000000000",
+  "gasPrice": "20000000000",
+  "gas": "21000",
+  "ipMax": 10,
   "addressMax": 1
 }
