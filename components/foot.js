@@ -30,9 +30,11 @@ export default function Foot() {
         <Row gutter={[0, 0]}>
           <Col span={smallDevice() ? 24 : 8}>
             <div style={{ marginTop: "40px", height: "50px" }}>
-              <div className={styles.img}>{/* <Image width={176} height={40} src="/images/nelo2.png" preview={false} /> */}</div>
+              <div className={styles.img}>
+                <Image width={423} height={43} src="/images/sideline.png" preview={false} />
+              </div>
             </div>
-            <div className={styles.chain}>Copyright © 2022 Carina Pte Ltd</div>
+            <div className={styles.chain}>Copyright © 2022 SideLine Pte Ltd</div>
             <div className={styles.chain}>All rights reserved</div>
           </Col>
           <Col span={smallDevice() ? 24 : 8}>

@@ -1,14 +1,7 @@
 {
-  "provider": "http://carina-eth-rpc.mybc.fun",
-  "rpc": "http://carina-rpc.mybc.fun",
-  "api": "http://carina-api.mybc.fun",
-  "chainId": 20191205,
-  "cosmosChainId": "evmos_20191205-1",
-  "hexPrivateKey": "f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769",
-  "value": "10000000000000000000",
-  "govValue": "1000000000000000000",
-  "gasPrice": "20000000000",
-  "gas": "21000",
-  "ipMax": 10,
+  "rpcEndpoint": "http://114.115.184.178:26657",
+  "mnemonic": "cheap risk tuna pole avoid indicate steel token ocean skate attract tent assist still shrimp anchor tuition suffer save truth rhythm island charge denial",
+  "value": "100000000",
+  "ipMax": 3,
   "addressMax": 1
 }

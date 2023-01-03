@@ -1,6 +1,5 @@
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import { ethToEvmos, evmosToEth } from "@tharsis/address-converter";
-import { Card, Col, Input, message, Row, Spin } from "antd";
+import { Card, Col, Input, message, Row, Spin, Image } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
@@ -19,7 +18,7 @@ export default class App extends Component {
     hash: "",
     err: "",
     result: false,
-    inputAddress: "",
+    inputAddress: "sl165vey94zzs0aesk4jw6vp2zq5762fjh38q9rgr",
     smallDevice: false,
   };
   id = "";
@@ -58,23 +57,16 @@ export default class App extends Component {
     }
   }
 
-  send = async (coin) => {
+  send = async () => {
     const { value } = this.inputAddress.state;
     let to = value.toLowerCase();
 
     if (!to) {
       message.error("Please enter an address");
       return;
-    } else if (!/^(0x)?[0-9a-f]{40}$/i.test(to) && !/^(evmos1)?[0-z]{38}$/i.test(to)) {
+    } else if (!/^(0x)?[0-9a-f]{40}$/i.test(to) && !/^(sl1)?[0-z]{38}$/i.test(to)) {
       message.error(to + " it's not a valid address");
       return;
-    }
-    to = value.toLowerCase();
-    if (coin == 0 && to.startsWith("evmos")) {
-      to = evmosToEth(to);
-    }
-    if (coin == 1 && to.startsWith("0x")) {
-      to = ethToEvmos(to);
     }
 
     this.setState({ loading: true, result: false });
@@ -87,7 +79,7 @@ export default class App extends Component {
       if (status === 200) {
         const { code, msg } = data;
         if (code === 0) {
-          message.success(`successfully send ${coin == 0 ? "10 Evmos" : "1 Gov"} to ` + to, 30);
+          message.success(`successfully send 100000000 WRMB to ` + to, 30);
         } else {
           err = msg;
           message.error(msg);
@@ -110,33 +102,28 @@ export default class App extends Component {
     return (
       <div className="app">
         <Head>
-          <title>Carina Testnet Faucet</title>
+          <title>Sideline Testnet Faucet</title>
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"></meta>
         </Head>
         <Spin tip="In the transaction......" spinning={loading}>
           <div className={this.state.smallDevice ? "mobile-header-logo" : "header-logo"}>
-            {/* {this.state.smallDevice ? <Image preview={false} width={38} height={35} src="/images/n.jpg" /> : <Image preview={false} width={182} height={35} src="/images/nelo.png" />} */}
+            {this.state.smallDevice ? <Image preview={false} width={423} height={43} src="/images/sideline.png" /> : <Image preview={false} width={423} height={43} src="/images/sideline.png" />}
             <div style={{ float: "right" }}>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="http://carina-mintscan.mybc.fun/" target="_blank">
-                MintScan
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="http://sideline.lucq.fun/" target="_blank">
+                SideLine
               </a>
-              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="http://carina-ethscan.mybc.fun/" target="_blank">
-                EthScan
+              <a style={{ fontSize: "20px", fontFamily: "Microsoft YaHei", paddingRight: this.state.smallDevice ? "20px" : "60px" }} rel="noreferrer" href="http://cosmos.lucq.fun/" target="_blank">
+                Cosmos Tool
               </a>
             </div>
           </div>
           <Row type="flex" justify="center" align="middle" className="content">
             <Col style={{ minWidth: this.state.smallDevice ? "100%" : "500px", maxWidth: "500px" }}>
-              <Card title="Carina Testnet Faucet" bordered={true}>
-                <Input ref={(c) => (this.inputAddress = c)} size="large" placeholder="Input your address" allowClear style={{ marginBottom: "15px", height: "46px" }} />
+              <Card title="Sideline Testnet Faucet" bordered={true}>
+                <Input ref={(c) => (this.inputAddress = c)} size="large" defaultValue={"sl165vey94zzs0aesk4jw6vp2zq5762fjh38q9rgr"} placeholder="Input your address" allowClear style={{ marginBottom: "15px", height: "46px" }} />
                 <div style={{ margin: "12px 0px" }}>
-                  <div onClick={() => this.send(0)} className="send">
-                    Request 10 Evmos
-                  </div>
-                </div>
-                <div style={{ margin: "12px 0px" }}>
-                  <div onClick={() => this.send(1)} className="send">
-                    Request 1 Gov
+                  <div onClick={() => this.send()} className="send">
+                    Request 100000000 WRMB
                   </div>
                 </div>
               </Card>
