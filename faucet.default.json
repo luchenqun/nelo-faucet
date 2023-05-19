@@ -1,14 +1,11 @@
 {
-  "provider": "http://carina-eth-rpc.mybc.fun",
-  "rpc": "http://carina-rpc.mybc.fun",
-  "api": "http://carina-api.mybc.fun",
-  "chainId": 20191205,
-  "cosmosChainId": "evmos_20191205-1",
+  "provider": "http://quarix-eth-rpc.mybc.fun",
+  "rpc": "http://quarix-rpc.mybc.fun",
+  "api": "http://quarix-api.mybc.fun",
+  "chainId": 8888888,
+  "cosmosChainId": "quarix_8888888-1",
   "hexPrivateKey": "f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769",
-  "value": "10000000000000000000",
-  "govValue": "1000000000000000000",
-  "gasPrice": "20000000000",
-  "gas": "21000",
+  "amount": "10000000000000000000",
   "ipMax": 10,
-  "addressMax": 1
+  "addressMax": 2
 }

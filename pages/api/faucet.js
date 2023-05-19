@@ -1,17 +1,15 @@
 import { Wallet } from "@ethersproject/wallet";
+import { createTxRaw } from "@quarix/proto";
 import { signTypedData } from "@metamask/eth-sig-util";
-import { ethToEvmos } from "@tharsis/address-converter";
-import { generatePostBodyBroadcast } from "@tharsis/provider";
-import { createMessageSend, createTxRawEIP712, signatureToWeb3Extension } from "@tharsis/transactions";
+import { arrayify, concat, splitSignature } from "@ethersproject/bytes";
+import { generatePostBodyBroadcast } from "@quarix/provider";
+import { ethToQuarix } from "@quarix/address-converter";
+import { createTxMsgSend, createTxMsgAttest } from "@quarix/transactions";
 import axios from "axios";
 import dayjs from "dayjs";
 import fs from "fs-extra";
-import Web3 from "web3";
 
-let { provider, rpc, api, chainId, cosmosChainId, hexPrivateKey, value, govValue, gasPrice, gas, ipMax, addressMax } = require("../../faucet.json");
-const web3 = new Web3(provider);
-const account = web3.eth.accounts.privateKeyToAccount(hexPrivateKey);
-const from = account.address;
+let { rpc, api, chainId, cosmosChainId, hexPrivateKey, amount, ipMax, addressMax } = require("../../faucet.json");
 const db = "./db/";
 
 const http = axios.create({
@@ -57,6 +55,9 @@ const get = (url, params) => {
 const authAccount = async (address) => {
   return get(`${api}/cosmos/auth/v1beta1/accounts/${address}`);
 };
+const hasKYC = async (address) => {
+  return get(`${api}/evmos/kyc/v1/has_sbt_by_all?user=${address}`);
+};
 const txCommit = async (tx) => {
   return get(`${rpc}/broadcast_tx_commit`, { tx });
 };
@@ -96,36 +97,51 @@ const calcCount = (faucet, ip, id, to) => {
   return ret;
 };
 
-const txHexBytes = async (privateKeyHex, chain, fee, memo, createMessage, params) => {
-  const privateKey = Buffer.from(privateKeyHex.replace("0x", ""), "hex");
-  const wallet = new Wallet(privateKey);
-  const address = ethToEvmos(wallet.address);
-  const account = await authAccount(address);
-  const sender = {
-    accountAddress: address,
-    sequence: account.account.base_account.sequence,
-    accountNumber: account.account.base_account.account_number,
-    pubkey: Buffer.from(wallet._signingKey().compressedPublicKey.replace("0x", ""), "hex").toString("base64"),
-  };
+const createTxHex = (createTxMsg, context, params, privateKey, signType = "eip712") => {
+  const msg = createTxMsg(context, params);
+  const privateKeyBuf = Buffer.from(privateKey, "hex");
 
-  const msg = createMessage(chain, sender, fee, memo, params);
-  const signature = signTypedData({
-    privateKey,
-    data: msg.eipToSign,
-    version: "V4",
-  });
+  let signatureBytes;
+  if (signType === "eip712") {
+    const signature = signTypedData({
+      privateKey: privateKeyBuf,
+      data: msg.eipToSign,
+      version: "V4",
+    });
+    signatureBytes = Buffer.from(signature.replace("0x", ""), "hex");
+  } else {
+    const wallet = new Wallet(privateKeyBuf);
+    const dataToSign = `0x${Buffer.from(msg.signDirect.signBytes, "base64").toString("hex")}`;
+    const signatureRaw = wallet._signingKey().signDigest(dataToSign);
+    const splitedSignature = splitSignature(signatureRaw);
+    signatureBytes = arrayify(concat([splitedSignature.r, splitedSignature.s]));
+  }
 
-  let extension = signatureToWeb3Extension(chain, sender, signature);
-  let rawTx = createTxRawEIP712(msg.legacyAmino.body, msg.legacyAmino.authInfo, extension);
-  let txBytes = JSON.parse(generatePostBodyBroadcast(rawTx)).tx_bytes;
-  return "0x" + Buffer.from(txBytes).toString("hex");
+  const rawTx = createTxRaw(msg.signDirect.body.toBinary(), msg.signDirect.authInfo.toBinary(), [signatureBytes]);
+  const txBytes = JSON.parse(generatePostBodyBroadcast(rawTx)).tx_bytes;
+  const txHexBytes = "0x" + Buffer.from(txBytes).toString("hex");
+  return txHexBytes;
 };
 
-console.log("api/faucet start", provider, chainId, cosmosChainId, hexPrivateKey, value, govValue, gasPrice, gas, ipMax);
+const privateKeyToPublicKey = (privateKey, base64Encode = true) => {
+  const wallet = new Wallet(Buffer.from(privateKey.replace("0x", ""), "hex"));
+  const compressedPublicKey = wallet._signingKey().compressedPublicKey.toLowerCase().replace("0x", "");
+  if (base64Encode) {
+    return Buffer.from(compressedPublicKey, "hex").toString("base64");
+  }
+  return compressedPublicKey;
+};
+
+const privateKeyToQuarixAddress = (privateKey) => {
+  const wallet = new Wallet(Buffer.from(privateKey.replace("0x", ""), "hex"));
+  return ethToQuarix(wallet.address);
+};
+
+console.log("api/faucet start", chainId, cosmosChainId, hexPrivateKey, amount, ipMax);
 
 export default async function handler(req, res) {
   const { body, headers } = req;
-  const { to, id } = body;
+  const { to, id, denom } = body;
   const ip = headers["cf-connecting-ip"] || "127.0.0.1";
   const date = dayjs().format("YYYYMMDD");
   const item = ip.toLowerCase() + "_" + id.toLowerCase() + "_" + to.toLowerCase();
@@ -157,47 +173,64 @@ export default async function handler(req, res) {
     let data;
     let code = 0;
     let msg = "success";
-    if (to.indexOf("evmos") == 0) {
-      const chain = {
-        chainId,
-        cosmosChainId,
-      };
 
-      let fee = {
-        amount: "210000",
-        denom: "aevmos",
-        gas: "2000000000",
-      };
+    const chain = {
+      chainId: 8888888,
+      cosmosChainId: "quarix_8888888-1",
+    };
+    // convert mnemonic to private key
+    let privateKey = hexPrivateKey;
+    if (hexPrivateKey.indexOf(" ") > 0) {
+      privateKey = Wallet.fromMnemonic(privateKeyOrMnemonic)._signingKey().privateKey.toLowerCase().replace("0x", "");
+    }
 
-      const memo = "faucet";
-      const params = {
-        destinationAddress: to,
-        amount: govValue,
-        denom: "agov",
-      };
-      const hexBytes = await txHexBytes(hexPrivateKey, chain, fee, memo, createMessageSend, params);
-      data = await txCommit(hexBytes);
-      if (data?.check_tx?.code != 0) {
-        code = data?.check_tx?.code;
-        msg = data?.check_tx?.log;
-      }
-      if (code == 0 && data?.deliver_tx?.code != 0) {
-        code = data?.check_tx?.code;
-        msg = data?.check_tx?.log;
-      }
-    } else {
-      const nonce = await web3.eth.getTransactionCount(account.address);
-      const message = {
-        from,
+    let sender = {
+      accountAddress: privateKeyToQuarixAddress(privateKey),
+      sequence: "0",
+      accountNumber: "0",
+      pubkey: privateKeyToPublicKey(privateKey),
+    };
+
+    const fee = {
+      amount: "4000000000000000",
+      denom: "aqare",
+      gas: "2000000",
+    };
+
+    const memo = "send by faucet";
+
+    const params = {
+      destinationAddress: to,
+      amount,
+      denom,
+    };
+
+    const account = await authAccount(sender.accountAddress);
+    sender.sequence = account.account.base_account.sequence;
+    sender.accountNumber = account.account.base_account.account_number;
+
+    const kyc = await hasKYC(to);
+    console.log("kyc", kyc);
+    if (!kyc.has) {
+      const attestParams = {
         to,
-        gas,
-        gasPrice,
-        nonce,
-        value,
-        chainId,
       };
-      const transaction = await account.signTransaction(message);
-      data = await web3.eth.sendSignedTransaction(transaction.rawTransaction);
+      const context = { chain, sender, fee, memo: "attest by faucet" };
+      const txHex = createTxHex(createTxMsgAttest, context, attestParams, privateKey, "eip712");
+      data = await txCommit(txHex);
+      sender.sequence = String(parseInt(sender.sequence) + 1);
+    }
+
+    const context = { chain, sender, fee, memo };
+    const txHex = createTxHex(createTxMsgSend, context, params, privateKey, "eip712");
+    data = await txCommit(txHex);
+    if (data?.check_tx?.code != 0) {
+      code = data?.check_tx?.code;
+      msg = data?.check_tx?.log;
+    }
+    if (code == 0 && data?.deliver_tx?.code != 0) {
+      code = data?.check_tx?.code;
+      msg = data?.check_tx?.log;
     }
 
     faucet.items.push(item);
