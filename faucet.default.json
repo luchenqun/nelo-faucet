@@ -1,11 +1,10 @@
 {
-  "provider": "http://quarix-eth-rpc.mybc.fun",
-  "rpc": "http://quarix-rpc.mybc.fun",
-  "api": "http://quarix-api.mybc.fun",
+  "rpc": "http://127.0.0.1:26657",
+  "api": "http://127.0.0.1:1317",
   "chainId": 8888888,
   "cosmosChainId": "quarix_8888888-1",
   "hexPrivateKey": "f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769",
   "amount": "10000000000000000000",
-  "ipMax": 10,
+  "ipMax": 100,
   "addressMax": 2
 }

@@ -79,12 +79,12 @@ export default class App extends Component {
     let err = "";
     await sleep(100);
     try {
-      const reply = await axios.post(`/api/faucet`, { to, id: this.id, denom });
+      const reply = await axios.post(`/api/faucet`, { to, id: this.id, denom: "a" + denom });
       const { status, statusText, data } = reply;
       if (status === 200) {
         const { code, msg } = data;
         if (code === 0) {
-          message.success(`successfully send 1${denom} to ` + to, 30);
+          message.success(`successfully send 1${denom} to ` + value, 30);
         } else {
           err = msg;
           message.error(msg);
@@ -127,12 +127,12 @@ export default class App extends Component {
               <Card title="Quarix Testnet Faucet" bordered={true}>
                 <Input ref={(c) => (this.inputAddress = c)} size="large" placeholder="Input your address" allowClear style={{ marginBottom: "15px", height: "46px" }} />
                 <div style={{ margin: "12px 0px" }}>
-                  <div onClick={() => this.send("aqare")} className="send">
+                  <div onClick={() => this.send("qare")} className="send">
                     request 1 qare
                   </div>
                 </div>
                 <div style={{ margin: "12px 0px" }}>
-                  <div onClick={() => this.send("aqrx")} className="send">
+                  <div onClick={() => this.send("qrx")} className="send">
                     request 1 qrx
                   </div>
                 </div>

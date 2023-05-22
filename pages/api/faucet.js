@@ -4,7 +4,7 @@ import { signTypedData } from "@metamask/eth-sig-util";
 import { arrayify, concat, splitSignature } from "@ethersproject/bytes";
 import { generatePostBodyBroadcast } from "@quarix/provider";
 import { ethToQuarix } from "@quarix/address-converter";
-import { createTxMsgSend, createTxMsgAttest } from "@quarix/transactions";
+import { createTxMsgSend, createTxMsgIssueOrRenew } from "@quarix/transactions";
 import axios from "axios";
 import dayjs from "dayjs";
 import fs from "fs-extra";
@@ -56,7 +56,7 @@ const authAccount = async (address) => {
   return get(`${api}/cosmos/auth/v1beta1/accounts/${address}`);
 };
 const hasKYC = async (address) => {
-  return get(`${api}/evmos/kyc/v1/has_sbt_by_all?user=${address}`);
+  return get(`${api}/evmos/kybkyc/v1/has_kyc?account=${address}`);
 };
 const txCommit = async (tx) => {
   return get(`${rpc}/broadcast_tx_commit`, { tx });
@@ -210,13 +210,14 @@ export default async function handler(req, res) {
     sender.accountNumber = account.account.base_account.account_number;
 
     const kyc = await hasKYC(to);
-    console.log("kyc", kyc);
     if (!kyc.has) {
-      const attestParams = {
+      const issueOrRenewParams = {
         to,
+        expiryDate: "1849306088",
       };
-      const context = { chain, sender, fee, memo: "attest by faucet" };
-      const txHex = createTxHex(createTxMsgAttest, context, attestParams, privateKey, "eip712");
+
+      const context = { chain, sender, fee, memo: "issue or renew a kyc by faucet" };
+      const txHex = createTxHex(createTxMsgIssueOrRenew, context, issueOrRenewParams, privateKey, "eip712");
       data = await txCommit(txHex);
       sender.sequence = String(parseInt(sender.sequence) + 1);
     }
@@ -229,8 +230,8 @@ export default async function handler(req, res) {
       msg = data?.check_tx?.log;
     }
     if (code == 0 && data?.deliver_tx?.code != 0) {
-      code = data?.check_tx?.code;
-      msg = data?.check_tx?.log;
+      code = data?.deliver_tx?.code;
+      msg = data?.deliver_tx?.log;
     }
 
     faucet.items.push(item);

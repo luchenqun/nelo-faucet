@@ -400,9 +400,9 @@
     "@buf/cosmos_gogo-proto.bufbuild_es" "1.2.0-20211202200117-bee5511075b7.1"
     "@buf/googleapis_googleapis.bufbuild_es" "1.2.0-20220908150232-8d7204855ec1.1"
 
-"@buf/quarix_quarix.bufbuild_es@^1.2.0-20230517072650-b6c452f00da2.1":
-  "resolved" "https://buf.build/gen/npm/v1/@buf/quarix_quarix.bufbuild_es/-/quarix_quarix.bufbuild_es-1.2.0-20230517072650-b6c452f00da2.1.tgz"
-  "version" "1.2.0-20230517072650-b6c452f00da2.1"
+"@buf/quarix_quarix.bufbuild_es@^1.2.0-20230519070811-c2c572c17b86.1":
+  "resolved" "https://buf.build/gen/npm/v1/@buf/quarix_quarix.bufbuild_es/-/quarix_quarix.bufbuild_es-1.2.0-20230519070811-c2c572c17b86.1.tgz"
+  "version" "1.2.0-20230519070811-c2c572c17b86.1"
   dependencies:
     "@buf/cosmos_cosmos-proto.bufbuild_es" "1.2.0-20211202220400-1935555c206d.1"
     "@buf/cosmos_cosmos-sdk.bufbuild_es" "1.2.0-20221115045553-508e19f5f375.1"
@@ -1106,10 +1106,10 @@
     "link-module-alias" "^1.2.0"
     "shx" "^0.3.4"
 
-"@quarix/eip712@^0.3.9":
-  "integrity" "sha512-Wb50AE4T4tkBI3KNZUdQbAfY2P+O36Ai0BZQrmnssZR+YFGZr0uuFdBo3cl8Q02xeDOBeoIdvgMfYg5SFea27A=="
-  "resolved" "https://registry.npmjs.org/@quarix/eip712/-/eip712-0.3.9.tgz"
-  "version" "0.3.9"
+"@quarix/eip712@^0.3.10":
+  "integrity" "sha512-QkdyYNrr1eYuUPDSOu7pbzcOmfQ0wF64NQWYn9Lo7jXSXworLSGXPqSYwo1NKxFPSy99TdvcLNta43Cn2RQr5A=="
+  "resolved" "https://registry.npmjs.org/@quarix/eip712/-/eip712-0.3.10.tgz"
+  "version" "0.3.10"
   dependencies:
     "@cosmjs/proto-signing" "^0.28.13"
     "@metamask/eth-sig-util" "^4.0.1"
@@ -1119,15 +1119,15 @@
     "long" "^5.2.0"
     "shx" "^0.3.4"
 
-"@quarix/proto@^0.2.5", "@quarix/proto@^0.2.9":
-  "integrity" "sha512-hwh2fff7ENWmfzbGFPFUz79myOz2iSmClKvTfI27qXHFKtyBwkpSBmcMSQXOfiWBG+pK7UzOqTI6njYEQUAVlw=="
-  "resolved" "https://registry.npmjs.org/@quarix/proto/-/proto-0.2.9.tgz"
-  "version" "0.2.9"
+"@quarix/proto@^0.2.10", "@quarix/proto@^0.2.5":
+  "integrity" "sha512-f9jwzziCyHU7eFO70Bx2P6Vo12N9X7VC3zyb8Kt+eJQeJLEX6UG1ca+qVHqjcBi0wIT5CSVIG5W/+5SBjb9KVQ=="
+  "resolved" "https://registry.npmjs.org/@quarix/proto/-/proto-0.2.10.tgz"
+  "version" "0.2.10"
   dependencies:
     "@buf/cosmos_ibc.bufbuild_es" "^1.0.0-20230127093016-72d4bdec25a0.1"
     "@buf/evmos_evmos.bufbuild_es" "^1.2.0-20230315212311-c66c6f141d04.1"
     "@buf/quarix_cosmos-sdk.bufbuild_es" "^1.2.0-20230517014800-9b2ead8f9b03.1"
-    "@buf/quarix_quarix.bufbuild_es" "^1.2.0-20230517072650-b6c452f00da2.1"
+    "@buf/quarix_quarix.bufbuild_es" "^1.2.0-20230519070811-c2c572c17b86.1"
     "@bufbuild/protobuf" "^1.0.0"
     "@types/node" "^17.0.21"
     "link-module-alias" "^1.2.0"
@@ -1142,13 +1142,13 @@
     "link-module-alias" "^1.2.0"
     "shx" "^0.3.4"
 
-"@quarix/transactions@^0.3.12":
-  "integrity" "sha512-/Y3KH0jbM/rVnNyZp7vxdFr/A/GhrJXhmLrshphKA1cKL8QFiG7eJU+ivssUdIIRVn5F/vUP6nbi7cTX7/ESUQ=="
-  "resolved" "https://registry.npmjs.org/@quarix/transactions/-/transactions-0.3.12.tgz"
-  "version" "0.3.12"
+"@quarix/transactions@^0.3.13":
+  "integrity" "sha512-JvddWuJwfMkvu4dN2SnjsLjfCX68xNt5Xhj8Q5FI711Ol9Plw3ZOnKaIwkM4H/ACXdWWtxF1IhzSxGjajjxG5A=="
+  "resolved" "https://registry.npmjs.org/@quarix/transactions/-/transactions-0.3.13.tgz"
+  "version" "0.3.13"
   dependencies:
-    "@quarix/eip712" "^0.3.9"
-    "@quarix/proto" "^0.2.9"
+    "@quarix/eip712" "^0.3.10"
+    "@quarix/proto" "^0.2.10"
     "ethers" "^5.6.8"
     "link-module-alias" "^1.2.0"
     "shx" "^0.3.4"
@@ -4728,16 +4728,16 @@
   "resolved" "https://registry.npmmirror.com/qs/download/qs-6.9.6.tgz"
   "version" "6.9.6"
 
-"quarixjs@^0.3.12":
-  "integrity" "sha512-9I+hRD0y5FAlR4HJ/+22dDAoIPmGW37dGZibm2zWpRDauANh5GzVpXgcSV79+VFGPRMqoC96Np3cN0QE5bdp1g=="
-  "resolved" "https://registry.npmjs.org/quarixjs/-/quarixjs-0.3.12.tgz"
-  "version" "0.3.12"
+"quarixjs@^0.3.13":
+  "integrity" "sha512-Ngt13ryNJCRy86H+2YN+pHyjKiDCdbdYBP7AZsUGIMVALEWCZNd7w3Bi9aMbm1A0y55rk7gEPGurZmSXGJRJ4w=="
+  "resolved" "https://registry.npmjs.org/quarixjs/-/quarixjs-0.3.13.tgz"
+  "version" "0.3.13"
   dependencies:
     "@quarix/address-converter" "^0.1.10"
-    "@quarix/eip712" "^0.3.9"
-    "@quarix/proto" "^0.2.9"
+    "@quarix/eip712" "^0.3.10"
+    "@quarix/proto" "^0.2.10"
     "@quarix/provider" "^0.3.4"
-    "@quarix/transactions" "^0.3.12"
+    "@quarix/transactions" "^0.3.13"
     "link-module-alias" "^1.2.0"
     "shx" "^0.3.4"
 
