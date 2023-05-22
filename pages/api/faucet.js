@@ -164,9 +164,9 @@ export default async function handler(req, res) {
     if (!ip || !id) {
       return res.status(200).json({ msg: `forbid by the server!`, code: 403 });
     }
-    if (ret.to >= addressMax) {
+    if (ret.to >= addressMax || ret.id >= addressMax) {
       return res.status(200).json({ msg: `A maximum of ${addressMax} withdrawals per day are allowed`, code: 401 });
-    } else if (ret.ip >= ipMax || ret.id >= ipMax) {
+    } else if (ret.ip >= ipMax) {
       return res.status(200).json({ msg: `One IP address can be received for a maximum of ${ipMax} times a day`, code: 400 });
     }
 
