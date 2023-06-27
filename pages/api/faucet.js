@@ -56,7 +56,13 @@ const authAccount = async (address) => {
   return get(`${api}/cosmos/auth/v1beta1/accounts/${address}`);
 };
 const hasKYC = async (address) => {
-  return get(`${api}/evmos/kybkyc/v1/has_kyc?account=${address}`);
+  try {
+    const data = await http.get(`${api}/quarix/kybkyc/v1/kyc_status?account=${address}`);
+    return data;
+  } catch (error) {
+  }
+
+  return { has: false }
 };
 const txCommit = async (tx) => {
   return get(`${rpc}/broadcast_tx_commit`, { tx });
@@ -145,11 +151,12 @@ export default async function handler(req, res) {
   const ip = headers["cf-connecting-ip"] || "127.0.0.1";
   const date = dayjs().format("YYYYMMDD");
   const item = ip.toLowerCase() + "_" + id.toLowerCase() + "_" + to.toLowerCase();
+  console.log(ip, id, to)
   if (faucet == undefined) {
     try {
       await fs.ensureDir(db);
       faucet = await fs.readJson(db + date + ".json");
-    } catch (error) {}
+    } catch (error) { }
   } else {
     if (faucet.date != date) {
       await fs.writeJSON(db + faucet.date + ".json", faucet);
@@ -164,9 +171,9 @@ export default async function handler(req, res) {
     if (!ip || !id) {
       return res.status(200).json({ msg: `forbid by the server!`, code: 403 });
     }
-    if (ret.to >= addressMax) {
+    if (ret.to >= addressMax || ret.id >= addressMax) {
       return res.status(200).json({ msg: `A maximum of ${addressMax} withdrawals per day are allowed`, code: 401 });
-    } else if (ret.ip >= ipMax || ret.id >= ipMax) {
+    } else if (ret.ip >= ipMax) {
       return res.status(200).json({ msg: `One IP address can be received for a maximum of ${ipMax} times a day`, code: 400 });
     }
 
@@ -219,6 +226,7 @@ export default async function handler(req, res) {
       const context = { chain, sender, fee, memo: "issue or renew a kyc by faucet" };
       const txHex = createTxHex(createTxMsgIssueOrRenew, context, issueOrRenewParams, privateKey, "eip712");
       data = await txCommit(txHex);
+      console.log("data =========> ", data)
       sender.sequence = String(parseInt(sender.sequence) + 1);
     }
 
