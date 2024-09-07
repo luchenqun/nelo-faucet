@@ -13,7 +13,7 @@ const showMessageWithLink = (to, hash) => {
   const link = 'https://scan.ethos.cool/tx/' + hash;
   const content = (
     <span>
-      Success send 1 ETHOS to {to}, more detail see
+      Success send 10 ETHOS to {to}, more detail see
       <a rel="noreferrer" href={link} target="_blank" style={{ color: 'blue' }}>
         &nbsp;EthosScan
       </a>
@@ -113,6 +113,13 @@ export default class App extends Component {
                 target="_blank">
                 Uniswap&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </a>
+              <a
+                style={{ fontSize: '20px', fontFamily: 'Microsoft YaHei' }}
+                rel="noreferrer"
+                href="https://app.ethos.cool"
+                target="_blank">
+                App&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </a>
             </div>
           </div>
           <Row type="flex" justify="center" align="middle" className="content">
@@ -127,7 +134,7 @@ export default class App extends Component {
                 />
                 <div style={{ margin: '12px 0px' }}>
                   <div onClick={this.send} className="send">
-                    Request 1 ETHOS
+                    Request 10 ETHOS
                   </div>
                 </div>
               </Card>
